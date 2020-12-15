@@ -1,0 +1,6 @@
+iyr:2012 hcl:#b6652a hgt:160cm pid:223041037
+eyr:2030 byr:1920 ecl:oth cid:212
+
+pid:775975903 hgt:163cm byr:1966
+eyr:2023 ecl:amb iyr:2010
+

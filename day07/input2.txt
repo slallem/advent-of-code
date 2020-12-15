@@ -1,0 +1,3 @@
+shiny gold bags contain 2 dotted lime bags, 3 dark silver bags.
+dotted lime bags contain no other bags.
+dark silver bags contain 5 dotted lime bags.
