@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 
 import time
 import re
@@ -11,22 +12,6 @@ def regex_examples():
     print(re.findall(r'(xyz)', sample))
     print(re.match(r'^(.+95)', sample) is not None)
     print(re.match(r'xyz', sample) is not None)
-
-
-def minval(arr):
-    res = arr[0]
-    for val in arr:
-        if val < res:
-            res = val
-    return res
-
-
-def maxval(arr):
-    res = arr[0]
-    for val in arr:
-        if val > res:
-            res = val
-    return res
 
 
 def combinations(items: list, r: range = None):
@@ -59,7 +44,6 @@ def read_file(filename):
             data = text.strip()
             nb_lines += 1
             res.append(decode_ligne(data))
-    #print("number of lines {}".format(nb_lines))
     return res
 
 
@@ -69,8 +53,9 @@ start = time.time()
 # print(combinations(["A", "B", "C"], range(2,3)))
 # print(combinations(["X", "Y", "Z"]))
 
-read_file('input.txt')
+lines = read_file('input.txt')
 
+print("number of lines {}".format(len(lines)))
 
 
 end = time.time()
