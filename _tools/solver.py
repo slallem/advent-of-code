@@ -12,6 +12,7 @@ def regex_examples():
     print(re.findall(r'(xyz)', sample))
     print(re.match(r'^(.+95)', sample) is not None)
     print(re.match(r'xyz', sample) is not None)
+    print(re.match(r'^([ a-z0-9^:]+):.([0-9]+)-([0-9]+) or ([0-9]+)-([0-9]+)$', "departure date: 41-532 or 552-956").groups())
 
 
 def combinations(items: list, r: range = None):
