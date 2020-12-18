@@ -101,7 +101,7 @@ def evaluate(expr: str, verbose: bool=False):
 def custom_eval(expr: str, verbose: bool=False):
     xp = expr.replace(" ", "")
     #xp = xp.replace("+", "+ ")
-    xp = xp.replace("*", " * ")
+    #xp = xp.replace("*", " * ")
     items = re.findall(r"[+0-9]+|[*]", xp)
     if verbose:
         print("After Préfiltre eval = {}".format(items))
