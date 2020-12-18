@@ -61,4 +61,4 @@ print("number of lines {}".format(len(lines)))
 
 end = time.time()
 print("")
-print("Done! in {} seconds ".format(end - start))
+print("Done! in {:.3f} ms ".format((end - start)*1000))
