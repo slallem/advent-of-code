@@ -5,6 +5,16 @@ import re
 import itertools
 import copy
 
+from typing import List
+
+
+class Rule:
+    index = -1
+    value: str = None
+    possibilities: List[List['Rule']]
+
+
+
 def read_file(filename):
     global letterA
     global letterB
@@ -60,61 +70,76 @@ def read_file(filename):
 #def match_rule(rule_no: int, msg: str, verbose=False, tracing=False):
 
 
-def eval_series(keys: list, msg: str):
-    # [42,8,..]
-    remains = str()+msg
-    print(keys)
-    for part in keys:  # 42 then 8 ...
-        print(part)
-        match, remains = eval_rule(part, remains)
-        if not match:
-            # no match, try another one
-            return False, remains
-        # else continue the series til its end
-    return True, remains
+# def eval_series(prefix, keys: list):
+#     res = prefix
+#     if len(res) > 8:
+#         return res
+#     print("Trying series {}".format(keys))
+#     for part in keys:  # 42 then 8 ...
+#         print("Trying part {} of series {}".format(part, keys))
+#         res = eval_rule(res, part)
+#     return res
 
+tmp = dict()
+cnt = 0
 
-def eval_rule(key: int, msg: str):
+def eval_rule(prefix: str, key: int, reentry=0):
+    global cnt
+    global tmp
+    if reentry > 5:
+        return prefix
+    res = prefix
     # direct cases : "a" or "b"
     if key == letterA:
-        if msg.startswith("a"):
-            return True, msg[1:]
-        else:
-            return False, msg
+        res += "a"
+        return res
     elif key == letterB:
-        if msg.startswith("b"):
-            return True, msg[1:]
-        else:
-            return False, msg
+        res += "b"
+        return res
     # other cases (list of possiblities)
     alternatives = rules[key]
-    for series in alternatives:
-        match, remains = eval_series(series, msg)
-        if match and remains == "":
-            # found perfect match
-            return True, ""
+    # print("Alternatives for {} are {}".format(msg, alternatives))
+    for alt in alternatives:
+        cnt += 1
+        tmp[cnt] = str()+prefix
+        for idx in range(alt):  # 42 then 8 ...
+            part = alt[idx]
+            looping = reentry
+            if part == key:
+                looping += 1
+            # tmp = eval_rule(tmp + "[{}]".format(part), part, looping)
+            tmp[cnt] = eval_rule(tmp[cnt], part, looping)
+            print("---partial discover {} index {}".format(tmp[cnt], idx))
+        # End of serie
+        tmp[cnt] = tmp[cnt] + "--EOF"
+        print("For prefix \"{}\" i've found {}".format(prefix, tmp[cnt]))
+    return res
+
 
 
 start = time.time()
 
-rules, messages = read_file('input.txt')
+rules, messages = read_file('input-debug.txt')
 
 
-# for key in rules.keys():
-#     print("{} => {}".format(key, rules[key]))
-#
+for key in rules.keys():
+    print("{} => {}".format(key, rules[key]))
+
 
 print()
 print("Part #1")
 ok = 0
 ko = 0
 for message in messages:
-    b_match, b_remains = eval_rule(0, message)
-    # print("{} = {}".format(test, message))
-    if b_match:
-        ok += 1
-    else:
-        ko += 1
+    answer = eval_rule("", 0)
+    # print("{} = {}".format(b_match, message))
+    # if b_match:
+    #     ok += 1
+    # else:
+    #     ko += 1
+
+print(tmp)
+
 print("total ok {} ko {}".format(ok, ko))
 
 # PATCH PART2
