@@ -25,7 +25,7 @@ def combinations(items: list, r: range = None):
 
 
 def flip(tiles: set, position: int):
-    print("Flipping {}".format(position))
+    #print("Flipping {}".format(position))
     if position in tiles:
         tiles.remove(position)
     else:
@@ -67,6 +67,7 @@ start = time.time()
 
 lines = read_file('input.txt')
 
+
 print("number of lines {}".format(len(lines)))
 
 gw = 10000
@@ -95,11 +96,18 @@ for line in lines:
     flip(floor, newpos)
 
 
-
-print(floor)
+# print(floor)
 print()
-print(len(floor))
+print("Part 1 soluce {}".format(len(floor)))
 
+end = time.time()
+print("Part #1 Done! in {:.3f} ms ".format((end - start)*1000))
+print()
+start = time.time()
+
+#
+# PART 2
+#
 
 def white(tiles: set, flipped: set, pos: int):
     #Any white tile with exactly 2 black tiles immediately adjacent to it is flipped to black.
@@ -161,13 +169,11 @@ for day in range(100):
     #print("to remove {}".format(toremove))
     #print("to add {}".format(toadd))
     #print("floor after {}".format(floor))
-    print("Day {} : {}".format(day+1, len(floor)))
-
+    #print("Day {} : {}".format(day+1, len(floor)))
 
 print()
-print(len(floor))
-
+print("Part 2 soluce {}".format(len(floor)))
 
 end = time.time()
-print("")
-print("Done! in {:.3f} ms ".format((end - start)*1000))
+print("Part #2 Done! in {:.3f} ms ".format((end - start)*1000))
+
