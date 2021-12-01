@@ -1,4 +1,4 @@
-# Advent-of-code 2020
+# Advent-of-code
 
 ### Official site
 
@@ -6,5 +6,5 @@
 
 ### My private leaderboard
 
-* https://adventofcode.com/2020/leaderboard/private/view/988894
+* https://adventofcode.com/2021/leaderboard/private/view/988894
 
