@@ -94,15 +94,13 @@ def decode_ligne(wirings, digits):
 
 sum = 0
 for line in lines:
-    values = line.strip().split(",")
-    for value in values:
-        if len(value) > 0:
-            vals = value.split("|")
-            wirings = list(map(sort_chars, vals[0].split()))
-            odigits = list(map(sort_chars, vals[1].split()))
-            res = decode_ligne(wirings, odigits)
-            print("found {}".format(res))
-            sum += res
+    if len(line) > 0:
+        vals = line.split("|")
+        wirings = list(map(sort_chars, vals[0].split()))
+        odigits = list(map(sort_chars, vals[1].split()))
+        res = decode_ligne(wirings, odigits)
+        print("found {}".format(res))
+        sum += res
 
 print()
 print("Total sum is {}".format(sum))
