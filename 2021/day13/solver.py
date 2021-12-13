@@ -5,12 +5,9 @@ f = open('input_ex.txt', 'r')
 f = open('input.txt', 'r')
 lines = f.readlines()
 
-
 dots = []
 folds = []
 
-
-nodes = dict()
 for line in lines:
     if len(line) > 0:
         if "," in line:

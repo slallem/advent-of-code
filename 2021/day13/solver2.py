@@ -8,7 +8,6 @@ lines = f.readlines()
 dots = []
 folds = []
 
-nodes = dict()
 for line in lines:
     if len(line) > 0:
         if "," in line:
@@ -67,5 +66,4 @@ for fold in folds:
 
 display()
 
-# example gives O
 # puzzle gives KJBKEUBG
