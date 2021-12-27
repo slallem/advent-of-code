@@ -1,0 +1,272 @@
+
+
+inp w     ; v01
+mul x 0
+add x z
+mod x 26  ; x = 10
+div z 1   ; z = 0
+add x 10
+eql x w   ; x = 0 (v01 == 10 is impossible)
+eql x 0   ; x = 1 ("not")
+mul y 0
+add y 25  ; y = 25
+mul y x   ; y = 25  ( y * 1 = 25 * 1)
+add y 1   ; y = 26
+mul z y   ; z = 0  (0 * 26)
+mul y 0   ;
+add y w   ;
+add y 2   ; y = v01 + 2
+mul y x   ;               ; no change (as x = 1)
+add z y   ; z = v01 + 2
+
+inp w      ; v02
+mul x 0    ;
+add x z    ;
+mod x 26   ; x = (z % 26) + 14          ; z % 26 always == z (because z is (1+2..9+2) (3..11) ) => x in (17..25)
+div z 1    ;
+add x 14   ;
+eql x w    ; w is (1..9) and x is (17..25) => always false => x = 0
+eql x 0    ; x = 1  ("not")
+mul y 0    ;
+add y 25   ;
+mul y x    ; y = (25 * x) + 1
+add y 1    ;
+mul z y    ; z = z * ((25 * x) + 1)   => z = z * 26
+mul y 0    ;
+add y w    ; y = (v02 + 13) * x  (but x == 1) so y = v02 + 13
+add y 13
+mul y x
+add z y   ; z = z + v2 + 13           => z in (17+1+13..25+9+13) => z in (31..47)
+
+inp w      ; v03
+mul x 0    ;
+add x z    ;
+mod x 26   ; x = (z % 26) + 14       => x in (5..21) + 14 => x in (19..35)
+div z 1    ;
+add x 14   ;
+eql x w    ; x = 0  (impossible asw in (1..9) and x in (19..35)
+eql x 0    ; x = 1
+mul y 0    ;
+add y 25   ; y = (25 * x) + 1  => y = 26
+mul y x    ;
+add y 1
+mul z y    ; z = z * 26
+mul y 0
+add y w    ; y = (v03 + 13) * x
+add y 13
+mul y x
+add z y    ; z = z + v03 + 13
+
+
+inp w      ; v04
+mul x 0    ;
+add x z    ;
+mod x 26   ; x = (z % 26) - 13   => (z % 26) == (2..10) - 13 => x = (-11..-3)
+div z 26   ; z = z // 26         => z = z // 26 (should be == z[step -2] == v1 + v2 + 15
+add x -13  ;
+eql x w    ; impossible => x =  0
+eql x 0    ; x = 1  (not)
+mul y 0    ;
+add y 25   ;
+mul y x    ; y = 26
+add y 1    ;
+mul z y    ; z = z * 26
+mul y 0    ;
+add y w    ;
+add y 9    ;
+mul y x    ;
+add z y    ; z = z + v04 + 9
+
+inp w      ; v05
+mul x 0    ;
+add x z    ; v
+mod x 26   ;
+div z 1    ; No div
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25   ; z = z * 26
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 15
+mul y x
+add z y    ; z = z + v05 + 15
+
+inp w       ; v06
+mul x 0
+add x z
+mod x 26
+div z 26    ; z = z // 26
+add x -13
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y     ; z = z * 26
+mul y 0
+add y w
+add y 3
+mul y x
+add z y     ; z = z + v06 + 3
+
+inp w       ; v07
+mul x 0
+add x z
+mod x 26
+div z 26    ; z = z // 26
+add x -7
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y    ; z = z * 26
+mul y 0
+add y w
+add y 6
+mul y x
+add z y    ; z = z + v07 + 6
+
+inp w      ; v08
+mul x 0
+add x z
+mod x 26
+div z 1   ; no change
+add x 11
+eql x w
+eql x 0
+mul y 0
+add y 25   ; z = z * 26
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 5
+mul y x
+add z y   ; z = z + v08 + 5
+
+inp w      ; v09
+mul x 0
+add x z
+mod x 26
+div z 1   ; no change
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25   ; z = z * 26
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 16
+mul y x
+add z y   ; z = z + v09 + 16
+
+inp w       ; v10
+mul x 0
+add x z
+mod x 26
+div z 1    ; no change
+add x 13
+eql x w
+eql x 0
+mul y 0
+add y 25   ; z = z * 26
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 1
+mul y x
+add z y   ; z = z + v10 + 1
+
+inp w        ; v11
+mul x 0
+add x z
+mod x 26
+div z 26     ; z = z // 26   => z = ... number of preceding steps without divisions ?
+add x -4
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y      ; z = z * 26
+mul y 0
+add y w
+add y 6
+mul y x
+add z y     ; z = z + v11 + 6
+
+inp w      ; v12
+mul x 0
+add x z
+mod x 26
+div z 26   ; z = z // 26  => ... number of preceding steps without divisions ?
+add x -9
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y   ; z = z * 26
+mul y 0
+add y w
+add y 3
+mul y x
+add z y   ; z = z + v12 + 3
+
+inp w            ; v13
+mul x 0
+add x z
+mod x 26
+div z 26         ; z = z // 26
+add x -13
+eql x w
+eql x 0
+mul y 0
+add y 25        ; z = z * 26
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y       ; z = z + v13 + 7
+
+
+inp w        ; w = v14                   ; w = v14
+mul x 0      ; ...
+add x z      ; ...
+mod x 26     ; x = z % 26
+div z 26                                      ; z = z // 26
+add x -9     ; x = (z % 26) - 9
+eql x w      ; x = (x == w) ? 1 : 0
+eql x 0      ; x = (x == 0) ? 1 : 0      ;  x = (((z % 26) - 9) == v14) ? 0 : 1
+mul y 0      ; y = 0                     ; ...
+add y 25     ; y = y + 25                ; y = 25
+mul y x      ; y = y * x                 ; y = 25 | 0
+add y 1      ; y = y + 1                 ; y = 26 | 1
+mul z y      ; z = z * y
+mul y 0      ; ...
+add y w      ; ...
+add y 9      ; y = w + 9
+mul y x      ; y = (w + 9) * x
+add z y      ; z = z + ((w + 9) * x)    ; z = z + (v14 + 9) * ((((z % 26) - 9) == v14) ? 0 : 1)
+
+
+z = z + v14 + 9
