@@ -9,31 +9,32 @@ import (
 
 func main() {
 
-	// DAY 5
+	// DAY 6
 
 	// --- Parsing input file ---
-	var lines = readFileLines("input.txt")
+	var line = readFileLines("input.txt")[0]
 
 	// --- Part 1 ---
-	for _, line := range lines {
-		for i := 3; i < len(line); i++ {
-			var set = map[uint8]uint8{}
-			set[line[i-3]] = 1
-			set[line[i-2]] = 1
-			set[line[i-1]] = 1
-			set[line[i]] = 1
-			if len(set) == 4 {
-				fmt.Printf("%s: first marker after character %d", line, i+1)
-				break
-			}
-		}
-	}
-
-	//--fmt.Printf("Part One: message is: %s\n", message1)
+	fmt.Printf("Part One : first marker after character %d\n", findFirstMarker(line,4))
 
 	// --- Part 2 ---
-	//--fmt.Printf("Part Two: message is: %s\n", message2)
+	fmt.Printf("Part Two : first marker after character %d\n", findFirstMarker(line,14))
 
+}
+
+func findFirstMarker(line string, markerLen int) int {
+	res := -1
+	for i := markerLen-1; i < len(line); i++ {
+		var set = map[uint8]uint8{}
+		for j := 0; j < markerLen; j++ {
+			set[line[i-j]] = 1
+		}
+		if len(set) == markerLen {
+			res = i+1
+			break
+		}
+	}
+	return res
 }
 
 func readFileLines(filename string) []string {
