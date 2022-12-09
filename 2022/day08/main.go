@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	// DAY 7
+	// DAY 8
 
 	// --- Parsing input file ---
 	var forest = loadForest(readFileLines("input.txt"))
