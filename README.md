@@ -12,4 +12,5 @@
 
 - 2020-2021: Quick and dirty Python did the job
 - 2022: Let's give a try to Go programming language !
+- 2023: Hands on with Kotlin script
 
