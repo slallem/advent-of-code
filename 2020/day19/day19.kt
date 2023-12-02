@@ -1,9 +1,6 @@
 package org.example
 
-import kotlinx.coroutines.delay
 import java.io.File
-import kotlin.concurrent.thread
-
 
 class Rule() {
     var index: Int = -1
