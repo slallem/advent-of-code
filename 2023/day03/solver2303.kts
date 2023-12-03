@@ -12,6 +12,7 @@ var total2 = 0
 
 var values: List<Value> = mutableListOf()
 
+// Parse values and memorize their bounding coordinates
 for (yy in 0..lines.size-1) {
     var v: Value? = null
     for (xx in 0..lines[yy].length-1) {
@@ -28,6 +29,7 @@ for (yy in 0..lines.size-1) {
     }
 }
 
+// Part One
 for (yy in 0..lines.size-1) {
     for (xx in 0..lines[yy].length-1) {
         if (isSpecialChar(lines[yy][xx])) {
@@ -40,6 +42,7 @@ for (yy in 0..lines.size-1) {
     }
 }
 
+// Part Two
 for (yy in 0..lines.size-1) {
     for (xx in 0..lines[yy].length-1) {
         if (isSpecialChar(lines[yy][xx])) {
