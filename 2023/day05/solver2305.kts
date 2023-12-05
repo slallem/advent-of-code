@@ -15,19 +15,19 @@ fun solve(filename: String) {
 
     println()
     println("Solving file %s".format(filename))
-    val lines = File(filename).readLines().filter { s: String -> s.isNotBlank() }
+    val lines = File(filename).readLines().filter { s: String -> s.isNotBlank() }.toMutableList()
 
     // Parse lines
 
     val seeds = lines.removeFirst().split(":").last()
-        .split(" ").filter { it.isNotBlank() }.map { it.toLong() }.toList()
+        .split(" ").filter { it.isNotBlank() }.map { it.toLong() }.toMutableList()
     var category = Category("","","", mutableListOf())
     val categories : MutableMap<String, Category> = mutableMapOf()
     lines.forEach { line ->
         if ("0123456789".contains(line[0])) {
             // Values
             val triplet = line.split(" ").filter { it.isNotBlank() }.map { it.toLong() }
-            category.ranges.addLast(ValueRange(triplet[1], triplet[0], triplet[2]))
+            category.ranges.add(ValueRange(triplet[1], triplet[0], triplet[2]))
         } else {
             // Title like "soil-to-fertilizer map:"
             val mapId = line.split("map:").first().trim()
@@ -40,67 +40,46 @@ fun solve(filename: String) {
     // --- Part 1 - count points
 
     val locations = seeds
-        .map { categories["seed-to-soil"]!!.map(it) }
-        .map { categories["soil-to-fertilizer"]!!.map(it) }
-        .map { categories["fertilizer-to-water"]!!.map(it) }
-        .map { categories["water-to-light"]!!.map(it) }
-        .map { categories["light-to-temperature"]!!.map(it) }
-        .map { categories["temperature-to-humidity"]!!.map(it) }
-        .map { categories["humidity-to-location"]!!.map(it) }
+        .map { categories["seed-to-soil"]!!.mapVal(it) }
+        .map { categories["soil-to-fertilizer"]!!.mapVal(it) }
+        .map { categories["fertilizer-to-water"]!!.mapVal(it) }
+        .map { categories["water-to-light"]!!.mapVal(it) }
+        .map { categories["light-to-temperature"]!!.mapVal(it) }
+        .map { categories["temperature-to-humidity"]!!.mapVal(it) }
+        .map { categories["humidity-to-location"]!!.mapVal(it) }
 
     val lowestLocation = locations.minOf { it }
     val answer1 = lowestLocation
 
     println("Part #1 answer is %d".format(answer1))
 
-    // Part2
+    // --- Part 2
 
-    // FIXME WIP = headache for now ;)
-    //  To be continued
-    /*
-    val reverseCategories : MutableMap<String, Category> = mutableMapOf()
-
-    val seedRanges : List<SimpleRange> = mutableListOf()
+    // Consider seeds couple values as ranges
+    val seedRanges = mutableListOf<SimpleRange>()
     while (seeds.isNotEmpty()) {
-        seedRanges.addLast(SimpleRange(seeds.removeFirst(), seeds.removeFirst()))
+        val start = seeds.removeFirst()
+        val len = seeds.removeFirst()
+        seedRanges.add(SimpleRange(start, start+len))
     }
 
-    val s1 = categories["seed-to-soil"]!!.mapRange()
+    // Chain mapping of ranges (splitting ranges into smaller pieces when needed)
+    val soilRanges = categories["seed-to-soil"]!!.mapRanges(seedRanges)
+    val fertilizerRanges = categories["soil-to-fertilizer"]!!.mapRanges(soilRanges)
+    val waterRanges = categories["fertilizer-to-water"]!!.mapRanges(fertilizerRanges)
+    val lightRanges = categories["water-to-light"]!!.mapRanges(waterRanges)
+    val tempRanges = categories["light-to-temperature"]!!.mapRanges(lightRanges)
+    val humidityRanges = categories["temperature-to-humidity"]!!.mapRanges(tempRanges)
+    val locationRanges = categories["humidity-to-location"]!!.mapRanges(humidityRanges)
 
-    val locationRanges = seedRanges
-        .map { categories["seed-to-soil"]!!.mapRange(it) }
-        .map { categories["soil-to-fertilizer"]!!.mapRange(it) }
-        .map { categories["fertilizer-to-water"]!!.mapRange(it) }
-        .map { categories["water-to-light"]!!.mapRange(it) }
-        .map { categories["light-to-temperature"]!!.mapRange(it) }
-        .map { categories["temperature-to-humidity"]!!.mapRange(it) }
-        .map { categories["humidity-to-location"]!!.mapRange(it) }
-    for see
-
-
-    val reverseSeedranges =
-        categories["humidity-to-location"]
-            .reverseMap { categories["humidity-to-location"]!!.map(it) }
-            .reverseMap { categories["temperature-to-humidity"]!!.map(it) }
-
-            .map { categories["seed-to-soil"]!!.map(it) }
-            .map { categories["soil-to-fertilizer"]!!.map(it) }
-            .map { categories["fertilizer-to-water"]!!.map(it) }
-            .map { categories["water-to-light"]!!.map(it) }
-            .map { categories["light-to-temperature"]!!.map(it) }
-
-
-            .reverseMap()
-
-    val answer2 = 0
+    val answer2 = locationRanges.map { it.from }.min()
 
     println("Part #2 answer is %d".format(answer2))
-    */
 
 }
 
 data class Category(var id: String, var idFrom: String, var idTo: String, val ranges : MutableList<ValueRange>) {
-    fun map(value: Long): Long {
+    fun mapVal(value: Long): Long {
         var result = value
         for (r in ranges) {
             if (value in r.source..r.source+r.length) {
@@ -110,57 +89,36 @@ data class Category(var id: String, var idFrom: String, var idTo: String, val ra
         }
         return result
     }
-    fun reverseMap(value: Long): Long {
-        var result = value
-        for (r in ranges) {
-            if (value in r.destination..r.destination+r.length) {
-                result = r.source + (value - r.source)
-                break
-            }
+    fun mapRanges(inputRanges: List<SimpleRange>): List<SimpleRange> {
+        val results = mutableSetOf<SimpleRange>()
+        for (ir in inputRanges) {
+            val subRanges = ir.splitRange(getBreaks()) // split range into smaller ones (if applicable)
+                .map { SimpleRange(mapVal(it.from), mapVal(it.to)) } // then transpose them
+            results.addAll(subRanges)
         }
-        return result
+        return results.toList()
     }
-    fun mapRange(input: SimpleRange): Set<SimpleRange> {
-        var results = mutableSetOf<SimpleRange>()
-        for (r in ranges) {
-            results.addAll(r.transpose(input))
+    private fun getBreaks() : List<Long> {
+        val results = mutableListOf<Long>()
+        ranges.forEach {
+            results.add(it.source)
+            results.add(it.source + it.length + 1)
         }
-        //println("%s reverse map value %d to %d".format(id, value, result))
         return results
     }
 }
 
-data class SimpleRange(val from: Long, val to: Long)
-data class ValueRange(val source: Long, val destination: Long, val length: Long) {
-    fun transpose(value: Long): Long {
-        var result = value
-        if (value in source..source+length) {
-            result = destination + (value - source)
-        }
-        return result
-    }
-    fun transpose(s: SimpleRange): Set<SimpleRange> {
-        var results = mutableSetOf<SimpleRange>()
-        if (s.from < source && s.to > source+length) {
-            // overlapping all
-            results.add(SimpleRange(transpose(s.from), transpose(source-1)))
-            results.add(SimpleRange(transpose(source), transpose(source+length)))
-            results.add(SimpleRange(transpose(source+length+1), transpose(s.to)))
-        } else if (s.from < source && s.to in source..source+length) {
-            // overlapping left
-            results.add(SimpleRange(transpose(s.from), transpose(source-1)))
-            results.add(SimpleRange(transpose(source), transpose(s.to)))
-        } else if (s.from in source..source+length && s.to in source..source+length) {
-            // included
-            results.add(SimpleRange(transpose(s.from), transpose(s.to)))
-        } else if (s.from in source..source+length && s.to > source+length) {
-            // overlapping right
-            results.add(SimpleRange(transpose(s.from), transpose(source+length)))
-            results.add(SimpleRange(transpose(source+length+1), transpose(s.to)))
-        } else {
-            // totally before or totally after
-            results.add(s)
+data class SimpleRange(val from: Long, val to: Long) {
+    fun splitRange(breaks: List<Long>) : List<SimpleRange> {
+        // Given a range, split it into several sub-ranges according to breaks
+        val results = mutableListOf<SimpleRange>()
+        val stops = mutableListOf<Long>(from, to+1)
+        stops.addAll(breaks.filter { it in from..to })
+        stops.sort()
+        for (i in 0..stops.size-2) {
+            results.add(SimpleRange(stops[i], stops[i+1]-1))
         }
         return results
     }
 }
+data class ValueRange(val source: Long, val destination: Long, val length: Long)
