@@ -2,15 +2,22 @@
 import java.io.File
 import java.lang.RuntimeException
 import kotlin.collections.first
+import kotlin.contracts.contract
 import kotlin.math.max
 import kotlin.math.pow
+import kotlin.system.measureTimeMillis
 import kotlin.text.substring
 import kotlin.text.toCharArray
 
 println("2023 --- Day 6: Wait For It ---")
 
-solve("./example1.txt")
-solve("./input.txt")
+measureTime { solve("./example1.txt") }
+measureTime { solve("./input.txt") }
+
+fun measureTime(func: () -> Unit) {
+    val timeInMillis = measureTimeMillis { func() }
+    println("(The operation took $timeInMillis ms)")
+}
 
 fun solve(filename: String) {
 
