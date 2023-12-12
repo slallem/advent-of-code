@@ -52,7 +52,7 @@ fun countCombos(def: String, groups: List<Int>) : Long {
     val chars = def.toCharArray()
     val qmCount = chars.count { it == '?' }
     for (filler in 0..<power(2, qmCount)) {
-        val bits = filler.toULong().toString(radix = 2).reversed() + "0".repeat(10)
+        val bits = filler.toULong().toString(radix = 2).reversed() + "0".repeat(20)
         var filled = ""
         var index = -1
         chars.forEach { c ->
